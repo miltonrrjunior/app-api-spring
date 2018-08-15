@@ -1,13 +1,18 @@
 package com.milton.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.milton.entity.Usuario;
@@ -52,6 +57,19 @@ public class UsuarioController {
 	@RequestMapping(value = "/usuario/{nome}/nome", method = RequestMethod.GET)
 	public List<Usuario> listaPaginada(@PathVariable String nome) {
 		return this.usuarioService.buscaPorNome(nome);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/usuario/logado", method = RequestMethod.GET)
+	public Usuario currentUserName(Principal principal) {
+		Usuario usuario = usuarioService.findByEmail(principal.getName());
+		usuario.setSenha(passwordEncoderBean().encode(""));
+		return usuario;
+	}
+	
+	@Bean
+	public PasswordEncoder passwordEncoderBean() {
+		return new BCryptPasswordEncoder();
 	}
 
 }

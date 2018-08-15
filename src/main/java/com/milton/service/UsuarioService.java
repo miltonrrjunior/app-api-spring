@@ -40,4 +40,8 @@ public class UsuarioService {
 		return usuarioRepository.findByNomeLikeIgnoreCase(nome);
 	}
 
+	public Usuario findByEmail(String email) {
+		return usuarioRepository.findByEmail(email);
+	}
+
 }
